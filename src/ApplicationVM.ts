@@ -8,7 +8,7 @@ import config from './config'
 
 const logTypes = ['debug', 'log', 'info', 'warn', 'error', 'dir', 'trace'];
 
-export class ProjectVM {
+export class ApplicationVM {
 	readonly id;
 	readonly vm: NodeVM;
 
@@ -45,7 +45,7 @@ export class ProjectVM {
 	}
 
 	private createVm(context: any = {}) {
-		context.projectID = this.id;
+		context.appID = this.id;
 
 		const vm = new NodeVM({
 			require: {

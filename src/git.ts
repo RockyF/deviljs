@@ -13,10 +13,10 @@ function getGitApiHost() {
 }
 
 export async function getModulesCode(pid) {
-	const project = await getProject(pid);
-	if (project) {
-		const projectTree = await fetchTree(project.sha);
-		return Promise.all(projectTree.map(async entity => {
+	const app = await getApp(pid);
+	if (app) {
+		const appTree = await fetchTree(app.sha);
+		return Promise.all(appTree.map(async entity => {
 			const code = await fetchBlob(entity.sha);
 			return {
 				code,
@@ -24,7 +24,7 @@ export async function getModulesCode(pid) {
 			}
 		}));
 	} else {
-		throw new Error('project not exists');
+		throw new Error('app not exists');
 	}
 }
 
@@ -39,7 +39,7 @@ export async function getRepoCommitInfo() {
 	};
 }
 
-async function getProject(pid) {
+async function getApp(pid) {
 	const rootTree = await fetchTree(config.gitPublishBrunch);
 	const srcEntity = rootTree.find(item => item.path == 'src');
 	const srcTree = await fetchTree(srcEntity.sha);

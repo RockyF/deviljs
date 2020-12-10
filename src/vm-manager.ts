@@ -5,22 +5,22 @@
 import path = require("path");
 import * as fs from "fs-extra";
 import {getModulesCode, getRepoCommitInfo} from "./git";
-import {ProjectVM} from "./ProjectVM";
+import {ApplicationVM} from "./ApplicationVM";
 import {MODULE_LIFECYCLE_DEINIT, MODULE_LIFECYCLE_INIT} from "./constants";
 
-const projectVMMapping = {};
+const appVMMapping = {};
 
 /**
  * 获取一个项目虚拟机
  * @param pid
  * @param createIfNotExists
  */
-function getProjectVM(pid, createIfNotExists = false) {
-	let projectVM = projectVMMapping[pid];
-	if (!projectVM && createIfNotExists) {
-		projectVM = projectVMMapping[pid] = new ProjectVM(pid);
+function getAppVM(pid, createIfNotExists = false) {
+	let appVM = appVMMapping[pid];
+	if (!appVM && createIfNotExists) {
+		appVM = appVMMapping[pid] = new ApplicationVM(pid);
 	}
-	return projectVM;
+	return appVM;
 }
 
 /**
@@ -30,19 +30,19 @@ function getProjectVM(pid, createIfNotExists = false) {
  * @param code
  */
 function putModuleFromText(pid, moduleName, code) {
-	getProjectVM(pid, true).putModule(moduleName, code);
+	getAppVM(pid, true).putModule(moduleName, code);
 }
 
 /**
  * 获取项目列表
  */
-export function getProjects() {
-	let projects = [];
-	for (let id in projectVMMapping) {
-		let p: ProjectVM = projectVMMapping[id];
-		projects.push(p.shortcut);
+export function getApps() {
+	let apps = [];
+	for (let id in appVMMapping) {
+		let p: ApplicationVM = appVMMapping[id];
+		apps.push(p.shortcut);
 	}
-	return projects;
+	return apps;
 }
 
 /**
@@ -51,10 +51,10 @@ export function getProjects() {
  * @param pid
  * @param accessible
  */
-export function setProjectAccessible(pid, accessible) {
-	let projectVM: ProjectVM = getProjectVM(pid);
-	if (projectVM) {
-		projectVM.forbidden = !accessible;
+export function setAppAccessible(pid, accessible) {
+	let appVM: ApplicationVM = getAppVM(pid);
+	if (appVM) {
+		appVM.forbidden = !accessible;
 	} else {
 		return true;
 	}
@@ -66,10 +66,10 @@ export function setProjectAccessible(pid, accessible) {
  * @param pid
  * @param locked
  */
-export function lockProject(pid, locked) {
-	let projectVM: ProjectVM = getProjectVM(pid);
-	if (projectVM) {
-		projectVM.locked = locked;
+export function lockApp(pid, locked) {
+	let appVM: ApplicationVM = getAppVM(pid);
+	if (appVM) {
+		appVM.locked = locked;
 	} else {
 		return true;
 	}
@@ -92,9 +92,9 @@ export async function putModule(moduleCodeFile, pid, moduleName) {
  */
 export async function putModuleFromGit(pid) {
 	const repoCommitInfo = await getRepoCommitInfo();
-	let projectVM = getProjectVM(pid, true);
-	if (projectVM.repoCommitInfo.sha !== repoCommitInfo.sha) {
-		projectVM.updateRepoCommitInfo(repoCommitInfo)
+	let appVM = getAppVM(pid, true);
+	if (appVM.repoCommitInfo.sha !== repoCommitInfo.sha) {
+		appVM.updateRepoCommitInfo(repoCommitInfo)
 		const modulesCode: any = await getModulesCode(pid);
 
 		if (modulesCode) {
@@ -122,11 +122,11 @@ export async function doAction(pid, moduleName, action, args) {
 		err.code = 4;
 		throw err;
 	}
-	let projectVM: ProjectVM = getProjectVM(pid);
-	if (projectVM) {
-		return projectVM.doAction(moduleName, action, args);
+	let appVM: ApplicationVM = getAppVM(pid);
+	if (appVM) {
+		return appVM.doAction(moduleName, action, args);
 	} else {
-		let err: any = new Error('project not exists');
+		let err: any = new Error('app not exists');
 		err.code = 3;
 		throw err;
 	}
