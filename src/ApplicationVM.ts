@@ -23,9 +23,9 @@ export class ApplicationVM {
 
 	private _modulesMapping = {};
 
-	constructor(id) {
+	constructor(id, context?) {
 		this.id = id;
-		this.vm = this.createVm();
+		this.vm = this.createVm(context);
 	}
 
 	get shortcut() {
