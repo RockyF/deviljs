@@ -1,12 +1,12 @@
 {
 	"name": "deviljs",
-	"version": "1.0.0",
-	"main": "index.js",
+	"version": "1.0.3",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"license": "MIT",
 	"scripts": {
 		"dev": "tsc -w",
-		"build": "tsc",
-		"postinstall": "tsc"
+		"build": "tsc"
 	},
 	"dependencies": {
 		"form-data": "^3.0.0",

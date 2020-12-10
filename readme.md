@@ -6,3 +6,9 @@ or
 `npm i deviljs -S`
 
 ## Usage
+
+
+## Build
+`yarn dev`  
+or  
+`yarn build`
