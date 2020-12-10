@@ -4,26 +4,28 @@
 
 import merge from 'merge'
 
+export interface GitAuth {
+	username: string;
+	password: string;
+	client_id: string;
+	client_secret: string;
+	scope: string;
+}
+
 /**
  * 配置类型
  */
 export interface Config {
-	gitHost: string,
-	gitUser: string,
-	gitRepo: string,
+	gitHost: string;
+	gitUser: string;
+	gitRepo: string;
 	gitPublishBrunch?: string;
-	gitAuth: {
-		username: string,
-		password: string,
-		client_id: string,
-		client_secret: string,
-		scope: string,
-	},
-	logHub?: (logType: string, ...args) => void,
+	gitAuth: GitAuth;
+	logHub?: (logType: string, ...args: any[]) => void;
 }
 
 const defaultConfig = {
-	publishBrunch: 'master',
+	gitPublishBrunch: 'master',
 }
 
 let _config: Config = <Config>{};
@@ -33,7 +35,8 @@ let _config: Config = <Config>{};
  * @param config
  */
 export function injectConfig(config: Config) {
-	_config = merge.recursive(true, defaultConfig, config);
+	const c = merge.recursive(true, defaultConfig, config);
+	Object.assign(_config, c);
 }
 
 export default _config;
