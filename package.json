@@ -1,0 +1,23 @@
+{
+	"name": "deviljs",
+	"version": "1.0.0",
+	"main": "index.js",
+	"license": "MIT",
+	"scripts": {
+		"dev": "tsc -w",
+		"build": "tsc",
+		"postinstall": "tsc"
+	},
+	"dependencies": {
+		"form-data": "^3.0.0",
+		"fs-extra": "^9.0.1",
+		"merge": "^2.1.0",
+		"node-fetch": "^2.6.1",
+		"vm2": "^3.9.2"
+	},
+	"devDependencies": {
+		"@types/fs-extra": "^9.0.4",
+		"@types/node-fetch": "^2.5.7",
+		"typescript": "^4.1.2"
+	}
+}

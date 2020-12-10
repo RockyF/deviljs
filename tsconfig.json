@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "lib": ["es7", "dom"],
+    "outDir": "dist",
+    "sourceMap": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "isolatedModules": false,
+    "declaration": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "suppressImplicitAnyIndexErrors": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
