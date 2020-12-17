@@ -5,6 +5,7 @@
 import {NodeVM, VMScript,} from 'vm2';
 import {MODULE_LIFECYCLE_DEINIT, MODULE_LIFECYCLE_INIT} from "./constants";
 import config from './config'
+import {makeError} from "./Error";
 
 const logTypes = ['debug', 'log', 'info', 'warn', 'error', 'dir', 'trace'];
 
@@ -72,9 +73,7 @@ export class ApplicationVM {
 
 	putModule(moduleName, bundle) {
 		if (this.locked) {
-			let err: any = new Error(`locked`);
-			err.code = 11;
-			throw err;
+			throw makeError(`project [${this.id}] is locked`, 11);
 		} else {
 			const script = new VMScript(bundle, 'custom-module.js');
 			let module;
@@ -107,25 +106,25 @@ export class ApplicationVM {
 			throw err;
 		} else {
 			const module = this._modulesMapping[moduleName];
-			if (module.hasOwnProperty(action)) {
-				let actionBody = module[action];
-				try {
-					let timeLabel = `do action [${action}]`;
-					console.time(timeLabel);
-					this.vm.freeze(args);
-					this.vm.protect(args);
-					const result = await actionBody.apply(module, args);
-					console.timeEnd(timeLabel);
-					return result;
-				} catch (err) {
-					console.log(`do action [action] error:`, err);
-					err.code = 5;
-					throw err;
+			if (module) {
+				if (module.hasOwnProperty(action)) {
+					let actionBody = module[action];
+					try {
+						let timeLabel = `do action [${action}]`;
+						console.time(timeLabel);
+						this.vm.freeze(args);
+						this.vm.protect(args);
+						const result = await actionBody.apply(module, args);
+						console.timeEnd(timeLabel);
+						return result;
+					} catch (err) {
+						throw makeError(`do action [${action}] error: ` + err, 6);
+					}
+				} else if (checkNone) {
+					throw makeError(`action [${action}] not exists`, 5);
 				}
-			} else if (checkNone) {
-				let err: any = new Error(`action [${action}] not exists`);
-				err.code = 4;
-				throw err;
+			} else {
+				throw makeError(`module [${moduleName}] not exists`, 4);
 			}
 		}
 	}

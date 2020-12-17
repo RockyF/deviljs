@@ -7,6 +7,7 @@ import * as fs from "fs-extra";
 import {getModulesCode, getRepoCommitInfo} from "./git";
 import {ApplicationVM} from "./ApplicationVM";
 import {MODULE_LIFECYCLE_DEINIT, MODULE_LIFECYCLE_INIT} from "./constants";
+import {makeError} from "./Error";
 
 const appVMMapping = {};
 
@@ -56,7 +57,7 @@ export function setAppAccessible(pid, accessible) {
 	if (appVM) {
 		appVM.forbidden = !accessible;
 	} else {
-		return true;
+		throw makeError(`project [${pid}] not exists`, 1);
 	}
 }
 
@@ -126,8 +127,6 @@ export async function doAction(pid, moduleName, action, args) {
 	if (appVM) {
 		return appVM.doAction(moduleName, action, args);
 	} else {
-		let err: any = new Error('app not exists');
-		err.code = 3;
-		throw err;
+		throw makeError(`project [${pid}] not exists`, 1);
 	}
 }
