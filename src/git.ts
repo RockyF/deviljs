@@ -96,7 +96,8 @@ async function getToken() {
 	};
 
 	const resp = await fetch(config.gitHost + "/oauth/token", requestOptions);
-	const {access_token, expires_in, refresh_token, created_at} = await resp.json();
+	const respObj = await resp.json();
+	const {access_token, expires_in, refresh_token, created_at} = respObj
 	accessToken = access_token;
 	refreshToken = refresh_token;
 	now = Math.floor(Date.now() / 1000);
